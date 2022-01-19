@@ -1,0 +1,35 @@
+.category {
+    padding-bottom: 12px;
+    border-bottom: solid 1px #EEE;
+    margin-bottom: 12px;
+    font-size: 14px;
+
+    &_title {
+        font-size: 1.2em;
+        color: #888;
+        margin: 0 0 8px;
+    }
+
+    &_list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+
+
+    &_sub-list {
+        list-style: none;
+        padding-left: 10px;
+    }
+
+    &_link,
+    &_sub-link {
+        padding-top: 5px;
+        color: #333;
+        text-decoration: none;
+
+        i {
+            padding-right: 5px;
+        }
+    }
+}

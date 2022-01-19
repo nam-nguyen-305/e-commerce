@@ -1,0 +1,13 @@
+.star-rate {
+    span {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        cursor: pointer;
+
+        &::before {
+            content: '\2606';
+            color: #fbae00;
+        }
+    }
+}

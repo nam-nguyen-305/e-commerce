@@ -1,0 +1,25 @@
+.sort {
+    width: 100%;
+    line-height: 22px;
+    display: flex;
+    justify-content: flex-end;
+
+    &-by {
+        display: flex;
+        width: 11%;
+        justify-content: space-between;
+        margin-right: 10px;
+        align-items: center;
+
+        &-select {
+            select {
+                padding-right: 10px;
+            }
+        }
+
+        label {
+            font-weight: normal;
+            font-size: 13px;
+        }
+    }
+}

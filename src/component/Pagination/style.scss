@@ -1,0 +1,51 @@
+.active {
+    font-weight: bold;
+    color: black;
+
+}
+
+:disabled {
+    color: rgb(160, 160, 160);
+}
+
+button {
+    border: none;
+    align-items: center;
+    color: #0063C3;
+}
+
+.pagination {
+    margin-top: 10px;
+    background-color: #EEE;
+    font-size: 1.2em;
+    line-height: 3em;
+    text-align: center;
+
+    &_content {
+        margin: 0 auto;
+    }
+
+    &_prev,
+    &_next {
+        position: relative;
+
+    }
+
+    &_prev {
+        i {
+
+            position: absolute;
+            margin-top: 10px;
+            margin-left: -25px;
+        }
+    }
+
+    &_next {
+        i {
+
+            position: absolute;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+    }
+}
