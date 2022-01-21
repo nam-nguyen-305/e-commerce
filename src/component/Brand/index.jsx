@@ -1,44 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useStore, actions } from "../../store";
 
-function Brand({ filters, setFilters }) {
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    async function fetchPostsCategory() {
-      try {
-        const requestUrl = "http://localhost:3004/product";
-        const res = await fetch(requestUrl);
-        const resJson = await res.json();
-        setData(resJson);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    fetchPostsCategory();
-  }, []);
+function Brand() {
+  const [state, dispatch] = useStore();
+  const { productList, selected, filter } = state;
 
   const handleBrandCheck = (e) => {
     let values = e.target.value;
     if (e.target.checked) {
-      setFilters({
-        ...filters,
-        _page: 1,
-        brand_like: values,
-      });
+      dispatch(
+        actions.setFilter({
+          ...filter,
+          _page: 1,
+          brand_like: values,
+        })
+      );
+      dispatch(actions.setSelected(values));
     } else {
-      setFilters({
-        _page: 1,
-        _limit: 16,
-        name_like: "",
-        categories_like: "",
-        price_range_like: "",
-        brand_like: "",
-      });
+      dispatch(
+        actions.setFilter({
+          _page: 1,
+          _limit: 16,
+          name_like: "",
+          categories_like: "",
+          price_range_like: "",
+          brand_like: "",
+        })
+      );
+      dispatch(actions.setSelected(""));
     }
   };
 
-  const renderBrands = (data) => {
+  const renderBrands = (productList) => {
     let brands = [];
-    data.forEach((item) => {
+    productList.forEach((item) => {
       if (brands.indexOf(item.brand) === -1) {
         brands.push(item.brand);
       }
@@ -47,7 +42,12 @@ function Brand({ filters, setFilters }) {
     return brands.map((item, index) => {
       return (
         <li className="brand-range_item" key={index}>
-          <input type="checkbox" value={item} onClick={handleBrandCheck} />
+          <input
+            type="checkbox"
+            value={item}
+            onChange={handleBrandCheck}
+            checked={selected == item ? "checked" : ""}
+          />
           <label>{item}</label>
         </li>
       );
@@ -57,7 +57,9 @@ function Brand({ filters, setFilters }) {
   return (
     <section className="brand">
       <div className="title">Brands</div>
-      <ul className="brand_list common">{data && renderBrands(data)}</ul>
+      <ul className="brand_list common">
+        {productList && renderBrands(productList)}
+      </ul>
     </section>
   );
 }

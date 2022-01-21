@@ -1,39 +1,28 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
+import { useStore, actions } from "../../store";
 import "./style.scss";
 
-Category.propTypes = {
-  onClick: PropTypes.func,
-};
-
-function Category({ onClick }) {
-  const [data, setData] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-
-  useEffect(() => {
-    async function fetchPostsCategory() {
-      try {
-        const requestUrl = "http://localhost:3004/product";
-        const res = await fetch(requestUrl);
-        const resJson = await res.json();
-        setData(resJson);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    fetchPostsCategory();
-  }, []);
-
-  function handleOpenMenu(item) {
-    onClick(item);
-    setSelectedCategory(item);
+function Category() {
+  const [state, dispatch] = useStore();
+  const { productList, selected, filter } = state;
+  // const [selectedCategory, setSelectedCategory] = useState("");
+  function handleFilterCategoryClick(item) {
+    dispatch(
+      actions.setFilter({
+        ...filter,
+        categories_like: item,
+      })
+    );
   }
-
-  const renderCategory = (list) => {
+  function handleOpenMenu(item) {
+    handleFilterCategoryClick(item);
+    dispatch(actions.setSelected(item));
+  }
+  const renderCategory = (productList) => {
     let category = [];
     let categoryObj = {};
 
-    list.forEach((element) => {
+    productList.forEach((element) => {
       category.push(element.categories);
     });
 
@@ -81,7 +70,7 @@ function Category({ onClick }) {
           {categoryObj[item].lv2 && (
             <ul
               className="category_sub-list"
-              style={{ display: selectedCategory == item ? "block" : "none" }}
+              style={{ display: selected == item ? "block" : "none" }}
             >
               {categoryObj[item].lv2.map((subItem, subIndex) => {
                 return (
@@ -91,7 +80,7 @@ function Category({ onClick }) {
                       className="category_sub-link"
                       onClick={(e) => {
                         e.stopPropagation();
-                        onClick(subItem);
+                        handleFilterCategoryClick(subItem);
                       }}
                     >
                       <i className="fas fa-angle-right"></i>
@@ -110,7 +99,9 @@ function Category({ onClick }) {
   return (
     <section className="category">
       <div className="category_title">Show results for</div>
-      <ul className="category_list">{data && renderCategory(data)}</ul>
+      <ul className="category_list">
+        {productList && renderCategory(productList)}
+      </ul>
     </section>
   );
 }

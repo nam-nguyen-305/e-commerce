@@ -1,8 +1,11 @@
 import React, {useState, useEffect} from 'react';
+import { useStore, actions } from "./store";
+
 import './App.scss';
-import queryString from 'query-string'
+// import queryString from 'query-string'
 import { Header } from './component/common';
 import PostList from './component/Post'
+import ClearFilter from './component/ClearFilter'
 import Pagination from './component/Pagination'
 import Sort from './component/Sort'
 import Category from './component/Category'
@@ -10,167 +13,47 @@ import StarRate from './component/StarRate'
 import Prices from './component/Prices'
 import Brand from './component/Brand'
 import Type from './component/Type'
+
 function App() {
-
-  const [postList, setPostList] = useState([]);
-  const [sortValues, setSortValues] = useState('')
-  const [isClear, setIsClear] = useState(false)
-
-  const [pagination, setPagination] = useState({
-    _page: 1,
-    _limit: 16,
-    _totalRows: 116,
-  });
-
-  const [filters, setFilters] = useState({
-    _page: 1,
-    _limit: 16,
-    name_like: '',
-    categories_like: '',
-    price_range_like: '',
-    _sort: '',
-    _order: '',
-    rating_like: '',
-  })
-
+  const [state, dispatch] = useStore();
+  const { productList, filter } = state;
   useEffect(() => {
-    
-    async function fetchPosts() {
-      try{
-        const paramString = queryString.stringify(filters)
-        const requestUrl = `http://localhost:3004/product?${paramString}`;
+    async function fetchPostsCategory() {
+      try {
+        const requestUrl = "http://localhost:3004/product";
         const res = await fetch(requestUrl);
         const resJson = await res.json();
-        console.log(paramString)
-        setPostList(resJson);
-        setPagination({
-          ...pagination,
-          _page: filters._page,
-        });
+        dispatch(actions.setProductList(resJson));
       } catch (error) {
-        console.log('fail');
-      } 
+        console.log(error);
+      }
     }
-    fetchPosts();
+    fetchPostsCategory();
+  }, []);
 
-    const filterValueArr = [filters.name_like, filters.categories_like, filters.price_range_like];
-    const flag = filterValueArr.some(value => value !== '')
-    setIsClear(flag)
-  }, [filters]);
-  
-  // Pagination
-  function handlePageChange(pageNumber) {
-
-    setFilters({
-      ...filters,
-      _page: pageNumber,
-    })
-  }
-
-  // Search 
-  function handleFilterChange(newFilter) {
-
-    setFilters({
-      ...filters,
-      name_like: newFilter.searchTerm,
-
-    })
-  }
-
-  // Sort
-  function handleSort(e) {
-    const valueSelected = e.target.value;
-    setSortValues(valueSelected);
-    setFilters({
-      ...filters,
-      _sort: 'price',
-      _order: valueSelected
-    })
-    
-  }
-
-  // Category
-  function handleCategory(value) {
-    setFilters({
-      ...filters,
-      categories_like: value,
-    })
-  }
-
-  // StarRate
-  function handleStarRate(value) {
-    setFilters({
-      ...filters,
-      rating_like: value,
-    })
-
-  }
-
-  // Price
-  function handlePrices(value) {
-    setFilters({
-      ...filters,
-      price_range_like: value,
-    })
-  }
-
-  // Clear
-  function handleClearFilter() {
-    setFilters({
-      ...filters,
-      name_like: '',
-      categories_like: '',
-      price_range_like: '',
-    })
-  }
 
   return (
     <div className="app">
-
-      <Header onSubmit={handleFilterChange}/>
-
+      <Header />
       <aside>
+        <ClearFilter />
+        <Category />
+        <div className="checkbox-title">Refine by</div>
+        <Type />
 
-        {
-          isClear && 
-          <button onClick={handleClearFilter}>Clear Filter</button>
-        }
-        <Category onClick={handleCategory}/>
-        <section>
-          <div className="checkbox-title">Refine by</div>
-          <Type 
-            filter={filters}
-            setFilters={setFilters}
-          />
-      
-          <Brand  
-            filter={filters}
-            setFilters={setFilters}
-          />
-        </section>
+        <Brand />
 
-        <section>
-          <div className="title">Ratings</div>
-          <StarRate onStarChange={handleStarRate}/>
-        </section>
+        <StarRate />
 
-        <Prices onPriceChange={handlePrices}/>
-
+        <Prices />
+        
       </aside>
-
       <div className="result_wrapper">
+        <Sort />
 
-        <Sort 
-          sort={sortValues}
-          onPageChange={handleSort}
-        />
+        <PostList />
 
-        <PostList posts={postList} />
-
-        <Pagination 
-          pagination={pagination}
-          onPageChange={handlePageChange}
-        />
+        <Pagination />
       </div>
     </div>
   );
