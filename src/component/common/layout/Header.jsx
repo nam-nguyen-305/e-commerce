@@ -1,25 +1,26 @@
-import React, { useRef, useState } from "react";
-import PropTypes from "prop-types";
+import React, { useRef } from "react";
+import { useStore, actions } from "../../../store";
+
 import "./Header.scss";
 const logo = require("../../../assets/img/logo.png");
 
-Header.propTypes = {
-  onSubmit: PropTypes.func,
-};
+function Header() {
+  const [state, dispatch] = useStore();
+  const { searchTerm, filter } = state;
 
-Header.defaultProps = {
-  onSubmit: null,
-};
-function Header(props) {
-  const { onSubmit } = props;
-  const [searchTerm, setSearchTerm] = useState("");
   const typingTimeoutRef = useRef(null);
+  function handleSearchDebounce(value) {
+    dispatch(
+      actions.setFilter({
+        ...filter,
+        name_like: value.searchTerm,
+      })
+    );
+  }
   function handleSearchTermChange(e) {
-    const value = e.target.value;
-    setSearchTerm(value);
+    const inputValue = e.target.value;
 
-    if (!onSubmit) return;
-
+    dispatch(actions.setSearchItem(inputValue));
     // SET -- 100, CLEAR, SET -- 300 -> SUBMIT
     // SET -- 300 -> SUBMIT
     if (typingTimeoutRef.current) {
@@ -27,9 +28,9 @@ function Header(props) {
     }
     typingTimeoutRef.current = setTimeout(() => {
       const formValue = {
-        searchTerm: value,
+        searchTerm: inputValue,
       };
-      onSubmit(formValue);
+      handleSearchDebounce(formValue);
     }, 300);
   }
   return (

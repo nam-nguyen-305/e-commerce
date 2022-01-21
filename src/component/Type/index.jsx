@@ -1,45 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useStore, actions } from "../../store";
 import "./style.scss";
 
-function Type({ filters, setFilters }) {
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    async function fetchPostsCategory() {
-      try {
-        const requestUrl = "http://localhost:3004/product";
-        const res = await fetch(requestUrl);
-        const resJson = await res.json();
-        setData(resJson);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    fetchPostsCategory();
-  }, []);
+function Type() {
+  const [state, dispatch] = useStore();
+  const { productList, selected, filter } = state;
 
   const handleTypeCheck = (e) => {
     let values = e.target.value;
     if (e.target.checked) {
-      setFilters({
-        ...filters,
-        _page: 1,
-        type_like: values,
-      });
+      dispatch(
+        actions.setFilter({
+          ...filter,
+          _page: 1,
+          type_like: values,
+        })
+      );
+      dispatch(actions.setSelected(values));
     } else {
-      setFilters({
-        _page: 1,
-        _limit: 16,
-        name_like: "",
-        categories_like: "",
-        price_range_like: "",
-        type_like: "",
-      });
+      dispatch(
+        actions.setFilter({
+          _page: 1,
+          _limit: 16,
+          name_like: "",
+          categories_like: "",
+          price_range_like: "",
+          type_like: "",
+        })
+      );
+      dispatch(actions.setSelected(""));
     }
   };
 
-  const renderTypes = (data) => {
+  const renderTypes = (productList) => {
     let types = [];
-    data.forEach((item) => {
+    productList.forEach((item) => {
       if (types.indexOf(item.type) === -1) {
         types.push(item.type);
       }
@@ -48,7 +43,12 @@ function Type({ filters, setFilters }) {
     return types.map((item, index) => {
       return (
         <li className="type-range_item" key={index}>
-          <input type="checkbox" value={item} onClick={handleTypeCheck} />
+          <input
+            type="checkbox"
+            value={item}
+            onChange={handleTypeCheck}
+            checked={selected == item ? "checked" : ""}
+          />
           <label>{item}</label>
         </li>
       );
@@ -58,7 +58,9 @@ function Type({ filters, setFilters }) {
   return (
     <section className="type ">
       <div className="title">Types</div>
-      <ul className="type_list common">{data && renderTypes(data)}</ul>
+      <ul className="type_list common">
+        {productList && renderTypes(productList)}
+      </ul>
     </section>
   );
 }

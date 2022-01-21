@@ -1,23 +1,22 @@
 import React from "react";
-import PropTypes from "prop-types";
 import "./style.scss";
+import { useStore, actions } from "../../store";
 
-Pagination.propTypes = {
-  pagination: PropTypes.object.isRequired,
-  onPageChange: PropTypes.func,
-};
+function Pagination() {
+  const [state, dispatch] = useStore();
+  const { pagination, filter } = state;
 
-Pagination.defaultProps = {
-  onPageChange: null,
-};
-
-function Pagination(props) {
-  const { pagination, onPageChange } = props;
   const { _page, _limit, _totalRows } = pagination;
   const totalPages = Math.ceil(_totalRows / _limit);
 
   function handlePageChange(newPage) {
-    if (onPageChange) onPageChange(newPage);
+    dispatch(
+      actions.setFilter({
+        ...filter,
+        _page: newPage,
+        _limit: 16,
+      })
+    );
   }
 
   function handleRenderPagination() {

@@ -1,36 +1,25 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
+
+import { useStore, actions } from "../../store";
+
 import "./style.scss";
 
-Prices.propTypes = {
-  onPriceChange: PropTypes.func,
-};
+function Prices() {
+  const [state, dispatch] = useStore();
 
-function Prices(props) {
-  const { onPriceChange } = props;
-  const [data, setData] = useState([]);
-  const [selected, setSelected] = useState("");
-
-  useEffect(() => {
-    async function fetchPostsCategory() {
-      try {
-        const requestUrl = "http://localhost:3004/product";
-        const res = await fetch(requestUrl);
-        const resJson = await res.json();
-        setData(resJson);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    fetchPostsCategory();
-  }, []);
-  function handlePriceChane(item) {
-    onPriceChange(item);
-    setSelected(item);
+  const { selected, productList, filter } = state;
+  function handlePriceChange(item) {
+    dispatch(
+      actions.setFilter({
+        ...filter,
+        price_range_like: item,
+      })
+    );
+    dispatch(actions.setSelected(item));
   }
-  const renderPrices = (data) => {
+  const renderPrices = (productList) => {
     let prices_ranges = [];
-    data.forEach((item) => {
+    productList.forEach((item) => {
       if (prices_ranges.indexOf(item.price_range) === -1) {
         prices_ranges.push(item.price_range);
       }
@@ -41,7 +30,7 @@ function Prices(props) {
         <li
           className={selected === item ? "active" : ""}
           key={index}
-          onClick={() => handlePriceChane(item)}
+          onClick={() => handlePriceChange(item)}
         >
           ${item}
         </li>
@@ -51,7 +40,9 @@ function Prices(props) {
   return (
     <section className="price-range">
       <div className="title">Prices</div>
-      <ul className="price-range_list">{data && renderPrices(data)}</ul>
+      <ul className="price-range_list">
+        {productList && renderPrices(productList)}
+      </ul>
     </section>
   );
 }

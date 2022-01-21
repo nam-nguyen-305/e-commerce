@@ -1,24 +1,29 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { useStore, actions } from "../../store";
+
 import "./style.scss";
 
-Sort.propTypes = {
-  sortValue: PropTypes.string,
-  onPageChange: PropTypes.func,
-};
-
-function Sort(props) {
-  const { sortValue, onPageChange } = props;
+function Sort() {
+  const [state, dispatch] = useStore();
+  const { selected, filter } = state;
   const sortOptions = ["asc", "desc"];
   function handlePageChange(e) {
-    if (onPageChange) onPageChange(e);
+    dispatch(
+      actions.setFilter({
+        ...filter,
+        _order: e.target.value,
+        _sort: "price",
+        _limit: 16,
+      })
+    );
+    dispatch(actions.setSelected(e.target.value));
   }
   return (
     <section className="sort">
       <div className="sort-by">
         <label>Sort by</label>
         <div id="sort-by-select">
-          <select onChange={(e) => handlePageChange(e)} value={sortValue}>
+          <select onChange={(e) => handlePageChange(e)} value={selected}>
             <option>Features</option>
             {sortOptions.map((item, index) => (
               <option value={item} key={index}>
