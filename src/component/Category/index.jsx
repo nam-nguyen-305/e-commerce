@@ -1,14 +1,17 @@
-import React, { useState } from "react";
-import { useStore, actions } from "../../store";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setFilter } from "../../actions/filter";
+import { setSelected } from "../../actions/selected";
 import "./style.scss";
 
 function Category() {
-  const [state, dispatch] = useStore();
-  const { productList, selected, filter } = state;
-  // const [selectedCategory, setSelectedCategory] = useState("");
+  const selected = useSelector((state) => state.selected.selected);
+  const filter = useSelector((state) => state.filter.filter);
+  const productList = useSelector((state) => state.productList.productList);
+  const dispatch = useDispatch();
   function handleFilterCategoryClick(item) {
     dispatch(
-      actions.setFilter({
+      setFilter({
         ...filter,
         categories_like: item,
       })
@@ -16,7 +19,7 @@ function Category() {
   }
   function handleOpenMenu(item) {
     handleFilterCategoryClick(item);
-    dispatch(actions.setSelected(item));
+    dispatch(setSelected(item));
   }
   const renderCategory = (productList) => {
     let category = [];

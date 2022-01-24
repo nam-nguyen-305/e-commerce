@@ -1,14 +1,18 @@
 import React, { useEffect } from "react";
-import { useStore, actions } from "../../store";
-
-import queryString from "query-string";
 import "./style.scss";
+
+import { useSelector, useDispatch } from "react-redux";
+import { setProductsPerPage } from "../../actions/productPerPage";
+import { setPaginations } from "../../actions/pagination";
+import queryString from "query-string";
 import StarPerRow from "../StarRate/StarPerRow";
 
 function PostList() {
-  const [state, dispatch] = useStore();
-  const { productPerPage, filter } = state;
-
+  const productPerPage = useSelector(
+    (state) => state.productPerPage.productPerPage
+  );
+  const filter = useSelector((state) => state.filter.filter);
+  const dispatch = useDispatch();
   useEffect(() => {
     async function fetchProductPerPage() {
       try {
@@ -16,9 +20,9 @@ function PostList() {
         const requestUrl = `http://localhost:3004/product?${paramString}`;
         const res = await fetch(requestUrl);
         const resJson = await res.json();
-        dispatch(actions.setProductsPerPage(resJson));
+        dispatch(setProductsPerPage(resJson));
         dispatch(
-          actions.setPaginations({
+          setPaginations({
             _page: filter._page,
             _limit: 16,
             _totalRows: 116,
@@ -29,13 +33,6 @@ function PostList() {
       }
     }
     fetchProductPerPage();
-    // const filterValueArr = [
-    //   filters.name_like,
-    //   filters.categories_like,
-    //   filters.price_range_like,
-    // ];
-    // const flag = filterValueArr.some((value) => value !== "");
-    // setIsClear(flag);
   }, [filter]);
 
   const content = productPerPage.map((post, index) => (

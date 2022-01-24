@@ -1,17 +1,19 @@
 import React from "react";
 import "./style.scss";
-import { useStore, actions } from "../../store";
+import { useSelector, useDispatch } from "react-redux";
+import { setFilter } from "../../actions/filter";
 
 function Pagination() {
-  const [state, dispatch] = useStore();
-  const { pagination, filter } = state;
+  const paginations = useSelector((state) => state.pagination.pagination);
+  const filter = useSelector((state) => state.filter.filter);
+  const dispatch = useDispatch();
 
-  const { _page, _limit, _totalRows } = pagination;
+  const { _page, _limit, _totalRows } = paginations;
   const totalPages = Math.ceil(_totalRows / _limit);
 
   function handlePageChange(newPage) {
     dispatch(
-      actions.setFilter({
+      setFilter({
         ...filter,
         _page: newPage,
         _limit: 16,

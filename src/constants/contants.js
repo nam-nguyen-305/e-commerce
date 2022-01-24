@@ -9,4 +9,3 @@ export const SET_SEARCH_ITEM = 'set_search_item'
 export const SET_PRODUCT_LIST = 'set_product_list'
 
 export const SET_SELECTED = 'set_selected'
-

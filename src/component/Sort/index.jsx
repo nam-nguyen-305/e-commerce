@@ -1,22 +1,24 @@
 import React from "react";
-import { useStore, actions } from "../../store";
-
+import { useSelector, useDispatch } from "react-redux";
+import { setFilter } from "../../actions/filter";
+import { setSelected } from "../../actions/selected";
 import "./style.scss";
 
 function Sort() {
-  const [state, dispatch] = useStore();
-  const { selected, filter } = state;
+  const selected = useSelector((state) => state.selected.selected);
+  const filter = useSelector((state) => state.filter.filter);
+  const dispatch = useDispatch();
   const sortOptions = ["asc", "desc"];
   function handlePageChange(e) {
     dispatch(
-      actions.setFilter({
+      setFilter({
         ...filter,
         _order: e.target.value,
         _sort: "price",
         _limit: 16,
       })
     );
-    dispatch(actions.setSelected(e.target.value));
+    dispatch(setSelected(e.target.value));
   }
   return (
     <section className="sort">

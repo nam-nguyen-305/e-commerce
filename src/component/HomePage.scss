@@ -1,0 +1,54 @@
+.app {
+    aside {
+        position: fixed;
+        overflow-y: auto;
+        top: 60px;
+        left: 0;
+        bottom: 0;
+        width: 230px;
+        padding: 20px;
+        border-right: 1px solid #EEE;
+        background: #FFFFFF;
+    }
+
+    .result_wrapper {
+        padding: 70px 10px 10px 240px;
+    }
+
+    .title {
+        font-weight: bold;
+        padding-bottom: 10px;
+    }
+
+    .common {
+        height: 175px;
+        overflow-y: scroll;
+        list-style: none;
+        padding-left: 0;
+        font-size: 14px;
+
+        li {
+            input {
+                margin-right: 7px;
+            }
+        }
+    }
+
+    .checkbox-title {
+        font-size: 1.2em;
+        color: #888;
+        margin: 0 0 8px;
+    }
+
+    .active {
+        font-size: 20px;
+
+        div {
+            span {
+                &::before {
+                    color: #b94d22;
+                }
+            }
+        }
+    }
+}

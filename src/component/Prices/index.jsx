@@ -1,21 +1,23 @@
-import React, { useState } from "react";
-
-import { useStore, actions } from "../../store";
-
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setFilter } from "../../actions/filter";
+import { setSelected } from "../../actions/selected";
 import "./style.scss";
 
 function Prices() {
-  const [state, dispatch] = useStore();
+  const dispatch = useDispatch();
+  const selected = useSelector((state) => state.selected.selected);
+  const filter = useSelector((state) => state.filter.filter);
+  const productList = useSelector((state) => state.productList.productList);
 
-  const { selected, productList, filter } = state;
   function handlePriceChange(item) {
     dispatch(
-      actions.setFilter({
+      setFilter({
         ...filter,
         price_range_like: item,
       })
     );
-    dispatch(actions.setSelected(item));
+    dispatch(setSelected(item));
   }
   const renderPrices = (productList) => {
     let prices_ranges = [];

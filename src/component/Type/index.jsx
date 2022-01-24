@@ -1,25 +1,27 @@
 import React from "react";
-import { useStore, actions } from "../../store";
-import "./style.scss";
+import { useSelector, useDispatch } from "react-redux";
+import { setFilter } from "../../actions/filter";
+import { setSelected } from "../../actions/selected";
 
 function Type() {
-  const [state, dispatch] = useStore();
-  const { productList, selected, filter } = state;
-
+  const dispatch = useDispatch();
+  const selected = useSelector((state) => state.selected.selected);
+  const filter = useSelector((state) => state.filter.filter);
+  const productList = useSelector((state) => state.productList.productList);
   const handleTypeCheck = (e) => {
     let values = e.target.value;
     if (e.target.checked) {
       dispatch(
-        actions.setFilter({
+        setFilter({
           ...filter,
           _page: 1,
           type_like: values,
         })
       );
-      dispatch(actions.setSelected(values));
+      dispatch(setSelected(values));
     } else {
       dispatch(
-        actions.setFilter({
+        setFilter({
           _page: 1,
           _limit: 16,
           name_like: "",
@@ -28,7 +30,7 @@ function Type() {
           type_like: "",
         })
       );
-      dispatch(actions.setSelected(""));
+      dispatch(setSelected(""));
     }
   };
 

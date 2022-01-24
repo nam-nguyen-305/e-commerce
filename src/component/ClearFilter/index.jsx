@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useStore, actions } from "../../store";
-
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setFilter } from "../../actions/filter";
+import { setSearchItem } from "../../actions/search";
+import { setSelected } from "../../actions/selected";
 function ClearFilter() {
-  const [state, dispatch] = useStore();
-  const { filter } = state;
+  const dispatch = useDispatch();
   const [isClear, setIsClear] = useState(false);
-
+  const selected = useSelector((state) => state.selected.selected);
+  const filter = useSelector((state) => state.filter.filter);
   useEffect(() => {
-    // const filterArr = Object.keys(filter);
-
-    // const lastFilterArr = filterArr.filter((item) => {
-    //   return item != "_page" && item != "_limit";
-    // });
     const filterArr = [
       filter._sort,
       filter._order,
@@ -27,7 +24,7 @@ function ClearFilter() {
   }, [filter]);
   function handleClearFilter() {
     dispatch(
-      actions.setFilter({
+      setFilter({
         ...filter,
         _sort: "",
         _order: "",
@@ -39,8 +36,8 @@ function ClearFilter() {
         type_like: "",
       })
     );
-    dispatch(actions.setSearchItem(""));
-    dispatch(actions.setSelected(""));
+    dispatch(setSearchItem(""));
+    dispatch(setSelected(""));
   }
   return (
     <section className="brand">

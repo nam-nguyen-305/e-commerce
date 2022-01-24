@@ -1,23 +1,24 @@
 import React from "react";
 import StarPerRow from "./StarPerRow";
-import { useStore, actions } from "../../store";
-
+import { useSelector, useDispatch } from "react-redux";
+import { setFilter } from "../../actions/filter";
+import { setSelected } from "../../actions/selected";
 import "./style.scss";
 
 function StarRate() {
-  const [state, dispatch] = useStore();
-  const { selected, filter } = state;
-
+  const dispatch = useDispatch();
+  const selected = useSelector((state) => state.selected.selected);
+  const filter = useSelector((state) => state.filter.filter);
   const arrayStar = Array.from({ length: 4 }, (_, i) => i + 1);
   function handleOnClick(item) {
     dispatch(
-      actions.setFilter({
+      setFilter({
         ...filter,
         _page: 1,
         rating_like: item,
       })
     );
-    dispatch(actions.setSelected(item));
+    dispatch(setSelected(item));
   }
 
   return (

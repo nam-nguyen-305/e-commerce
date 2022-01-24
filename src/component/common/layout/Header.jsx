@@ -1,17 +1,20 @@
 import React, { useRef } from "react";
-import { useStore, actions } from "../../../store";
-
+import { useSelector, useDispatch } from "react-redux";
+import { setFilter } from "../../../actions/filter";
+import { setSearchItem } from "../../../actions/search";
+import { setSelected } from "../../../actions/selected";
 import "./Header.scss";
 const logo = require("../../../assets/img/logo.png");
 
 function Header() {
-  const [state, dispatch] = useStore();
-  const { searchTerm, filter } = state;
-
+  const selected = useSelector((state) => state.selected.selected);
+  const searchTerm = useSelector((state) => state.search.searchTerm);
+  const filter = useSelector((state) => state.filter.filter);
+  const dispatch = useDispatch();
   const typingTimeoutRef = useRef(null);
   function handleSearchDebounce(value) {
     dispatch(
-      actions.setFilter({
+      setFilter({
         ...filter,
         name_like: value.searchTerm,
       })
@@ -20,7 +23,7 @@ function Header() {
   function handleSearchTermChange(e) {
     const inputValue = e.target.value;
 
-    dispatch(actions.setSearchItem(inputValue));
+    dispatch(setSearchItem(inputValue));
     // SET -- 100, CLEAR, SET -- 300 -> SUBMIT
     // SET -- 300 -> SUBMIT
     if (typingTimeoutRef.current) {
